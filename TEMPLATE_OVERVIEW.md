@@ -90,9 +90,10 @@ decisions, alerts and bouncer registrations live in your Postgres, not in a
 vendor SaaS. The engine subscribes to the free community blocklist (CAPI) so
 known-bad IPs are blocked proactively, and your own signals can be added with
 cscli decisions add or via the console. The Local API is a small Go service;
-RAM footprint measured on the reference deployment is roughly 80 to 120 MB
-for crowdsec, about 100 MB for Postgres and 900 MB to 1.1 GB for Metabase,
-which is why the dashboard service ships with a 1 GB memory allocation. The
+RAM footprint measured on the reference deployment is roughly 120 to 160 MB
+for crowdsec (with community blocklists loaded), about 70 to 100 MB for
+Postgres, and 1.0 to 1.3 GB for Metabase, whose JVM heap is capped at 700 MB
+via JAVA_OPTS to keep the dashboard service predictable. The
 LAPI healthcheck endpoint is /health (unauthenticated and DB-gated, with a
 300 second window for the first-boot hub sync and migrations); the dashboard
 is gated on the container being up plus its own restart policy instead,
