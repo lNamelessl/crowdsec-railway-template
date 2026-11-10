@@ -19,6 +19,10 @@ ETC_VOL=/var/lib/crowdsec/etc-crowdsec
 # populates INTO the volume, so config, credentials and the hub survive
 # restarts and redeploys.
 mkdir -p "$ETC_VOL"
+# The volume mount masks the image's /var/lib/crowdsec/data directory; the
+# upstream entrypoint symlinks preloaded data files into it without creating
+# it first, so make sure it exists.
+mkdir -p /var/lib/crowdsec/data
 if [ ! -L "$ETC" ]; then
     if [ -d "$ETC" ]; then
         cp -a "$ETC"/. "$ETC_VOL"/

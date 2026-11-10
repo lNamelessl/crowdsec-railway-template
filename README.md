@@ -100,5 +100,7 @@ railway ssh -s crowdsec -- cscli decisions list
 ## Local development
 
 Each service directory is a standalone Dockerfile context; `railway.json`
-per service pins builder, healthchecks (`/health` on crowdsec, `/` on
-dashboard) and the ON_FAILURE/10 restart policy.
+per service pins the builder, the `/health` healthcheck on crowdsec and the
+ON_FAILURE/10 restart policy (the dashboard has no healthcheck: Metabase has
+no dotless unauthenticated route, and Railway rejects dots in healthcheck
+paths — its domain uses the pinned target port 8080 instead).

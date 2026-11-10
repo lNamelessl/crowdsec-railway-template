@@ -22,7 +22,9 @@ prompts at deploy time.
 
 Volumes persist /var/lib/crowdsec (config, credentials, hub, data files) and
 /var/lib/postgresql, so decisions, bouncer keys and CAPI credentials survive
-redeploys. Healthchecks: /health on crowdsec, root path on the dashboard.
+redeploys. Healthcheck: /health on crowdsec (unauthenticated, DB-gated); the
+dashboard uses the pinned target port instead (Metabase's dotless routes are
+all auth-gated, and Railway rejects dots in healthcheck paths).
 Restart policy: ON_FAILURE with 10 retries.
 
 ## Honest positioning
@@ -91,8 +93,11 @@ cscli decisions add or via the console. The Local API is a small Go service;
 RAM footprint measured on the reference deployment is roughly 80 to 120 MB
 for crowdsec, about 100 MB for Postgres and 900 MB to 1.1 GB for Metabase,
 which is why the dashboard service ships with a 1 GB memory allocation. The
-LAPI healthcheck endpoint is /health; the dashboard has its own root health
-check with a 300 second window to accommodate Metabase's slower first boot.
+LAPI healthcheck endpoint is /health (unauthenticated and DB-gated, with a
+300 second window for the first-boot hub sync and migrations); the dashboard
+is gated on the container being up plus its own restart policy instead,
+because Metabase has no dotless unauthenticated route and Railway rejects
+dots in healthcheck paths.
 
 ## Why Deploy
 
